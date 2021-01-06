@@ -1,22 +1,40 @@
 package ACen1;
 
-import battlecode.common.GameActionException;
-import battlecode.common.RobotInfo;
-import battlecode.common.Team;
+import battlecode.common.*;
 
 public class Politician extends RobotPlayer {
+    static Direction dir;
+    static int movesTaken = 0;
+
+    // Setup the politician
+    static void setup() throws GameActionException {
+        RobotInfo[] nearby = rc.senseNearbyRobots(); // All nearby Robots
+        for (RobotInfo robot: nearby) {
+            if (robot.getType() == RobotType.ENLIGHTENMENT_CENTER) { // If its an enlightenment center
+                if (rc.canGetFlag(robot.getID())) {
+                    dir = directions[rc.getFlag(robot.getID())];
+                }
+            }
+        }
+    }
+
     // Run the politician
     static void run() throws GameActionException {
-        Team enemy = rc.getTeam().opponent();
-        int actionRadius = rc.getType().actionRadiusSquared;
-        RobotInfo[] attackable = rc.senseNearbyRobots(actionRadius, enemy);
-        if (attackable.length != 0 && rc.canEmpower(actionRadius)) {
-            System.out.println("empowering...");
-            rc.empower(actionRadius);
-            System.out.println("empowered");
-            return;
+        move();
+    }
+
+    // Move the politician
+    static void move() throws GameActionException {
+        if (rc.canMove(dir) && movesTaken < 5) {
+            rc.move(dir);
+            movesTaken++;
         }
-        if (tryMove(randomDirection()))
-            System.out.println("I moved!");
+        else if (movesTaken < 5) {
+            Direction rdir = directions[(int) (Math.random() * directions.length)];
+            if (rc.canMove(rdir) && (rdir.getDeltaX()*-1 != dir.getDeltaX() && rdir.getDeltaY()*-1 != dir.getDeltaY())) {
+                rc.move(rdir);
+                movesTaken++;
+            }
+        }
     }
 }

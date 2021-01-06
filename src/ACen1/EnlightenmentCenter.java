@@ -5,32 +5,34 @@ import battlecode.common.GameActionException;
 import battlecode.common.RobotType;
 
 public class EnlightenmentCenter extends RobotPlayer {
-    // All robots that could be spawned
-    static final RobotType[] spawnableRobot = {
-            RobotType.POLITICIAN,
-            RobotType.SLANDERER,
-            RobotType.MUCKRAKER,
-    };
+    static boolean builtThisRound = false;
+    static boolean builtLastRound = false;
+
+    static int idx = 0;
+
+    // Setup the enlightenment center
+    static void setup() throws GameActionException {
+
+    }
 
     // Run the enlightenment center
     static void run() throws GameActionException {
-        RobotType toBuild = randomSpawnableRobotType();
-        int influence = 50;
-        for (Direction dir : directions) {
-            if (rc.canBuildRobot(toBuild, dir, influence)) {
-                rc.buildRobot(toBuild, dir, influence);
-            } else {
-                break;
-            }
-        }
-    }
+        builtLastRound = builtThisRound;
+        builtThisRound = false;
 
-    /**
-     * Returns a random spawnable RobotType
-     *
-     * @return a random RobotType
-     */
-    static RobotType randomSpawnableRobotType() {
-        return spawnableRobot[(int) (Math.random() * spawnableRobot.length)];
+        if (rc.canBuildRobot(RobotType.POLITICIAN, directions[idx%8], 15) && !builtLastRound) {
+            rc.buildRobot(RobotType.POLITICIAN, directions[idx%8], 15);
+            rc.setFlag(idx%8);
+            builtThisRound = true;
+        }
+        idx++;
+
+        if (!builtThisRound && !builtLastRound) { rc.setFlag(1000); }
+
+        // Bidding logic
+        if (rc.canBid((int)(rc.getInfluence() * percentBid))) {
+            rc.bid((int)(rc.getInfluence() * percentBid));
+        }
+
     }
 }

@@ -3,8 +3,6 @@ package ACen1;
 import battlecode.common.*;
 
 public strictfp class RobotPlayer {
-    static RobotController rc;
-
     static final Direction[] directions = {
             Direction.NORTH,
             Direction.NORTHEAST,
@@ -16,7 +14,15 @@ public strictfp class RobotPlayer {
             Direction.NORTHWEST,
     };
 
-    static int turnCount;
+    static final float percentBid = 0.01f;
+
+    static final float percentMuckracker = 0.5f;
+    static final int minimumMuckraker = 10;
+
+    static final float percentSlanderer = 0.1f;
+    static final int minimumSlanderer = 100;
+
+    static RobotController rc;
 
     /**
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
@@ -29,16 +35,16 @@ public strictfp class RobotPlayer {
         // and to get information on its current status.
         ACen1.RobotPlayer.rc = rc;
 
-        turnCount = 0;
+        switch (rc.getType()) {
+            case ENLIGHTENMENT_CENTER: EnlightenmentCenter.setup(); break;
+            case POLITICIAN:           Politician.setup();          break;
+            case SLANDERER:            Slanderer.setup();           break;
+            case MUCKRAKER:            Muckraker.setup();           break;
+        }
 
-        System.out.println("I'm a " + rc.getType() + " and I just got created!");
         while (true) {
-            turnCount += 1;
             // Try/catch blocks stop unhandled exceptions, which cause your robot to freeze
             try {
-                // Here, we've separated the controls into a different method for each RobotType.
-                // You may rewrite this into your own control structure if you wish.
-                System.out.println("I'm a " + rc.getType() + "! Location " + rc.getLocation());
                 switch (rc.getType()) {
                     case ENLIGHTENMENT_CENTER: EnlightenmentCenter.run(); break;
                     case POLITICIAN:           Politician.run();          break;
@@ -54,29 +60,5 @@ public strictfp class RobotPlayer {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * Returns a random Direction.
-     *
-     * @return a random Direction
-     */
-    static Direction randomDirection() {
-        return directions[(int) (Math.random() * directions.length)];
-    }
-
-    /**
-     * Attempts to move in a given direction.
-     *
-     * @param dir The intended direction of movement
-     * @return true if a move was performed
-     * @throws GameActionException
-     */
-    static boolean tryMove(Direction dir) throws GameActionException {
-        System.out.println("I am trying to move " + dir + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(dir));
-        if (rc.canMove(dir)) {
-            rc.move(dir);
-            return true;
-        } else return false;
     }
 }
