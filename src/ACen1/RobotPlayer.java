@@ -4,23 +4,21 @@ import battlecode.common.*;
 
 public strictfp class RobotPlayer {
     static final Direction[] directions = {
-            Direction.NORTH,
-            Direction.NORTHEAST,
-            Direction.EAST,
-            Direction.SOUTHEAST,
-            Direction.SOUTH,
-            Direction.SOUTHWEST,
-            Direction.WEST,
-            Direction.NORTHWEST,
+            Direction.NORTH, // 0, 1
+            Direction.NORTHEAST, // 1, 1
+            Direction.EAST, // 1, 0
+            Direction.SOUTHEAST, // 1, -1
+            Direction.SOUTH, // 0, -1
+            Direction.SOUTHWEST, // -1, -1
+            Direction.WEST, // -1, 0
+            Direction.NORTHWEST, // -1, 1
     };
 
     static final float percentBid = 0.01f;
 
-    static final float percentMuckracker = 0.5f;
-    static final int minimumMuckraker = 10;
-
-    static final float percentSlanderer = 0.1f;
-    static final int minimumSlanderer = 100;
+    // Politician role details
+    static final int NORMAL = 0;
+    static int politicianRole = NORMAL;
 
     static RobotController rc;
 
@@ -45,6 +43,7 @@ public strictfp class RobotPlayer {
         while (true) {
             // Try/catch blocks stop unhandled exceptions, which cause your robot to freeze
             try {
+                System.out.println("I'm a " + rc.getType() + "! Location " + rc.getLocation());
                 switch (rc.getType()) {
                     case ENLIGHTENMENT_CENTER: EnlightenmentCenter.run(); break;
                     case POLITICIAN:           Politician.run();          break;
@@ -60,5 +59,9 @@ public strictfp class RobotPlayer {
                 e.printStackTrace();
             }
         }
+    }
+
+    static int myMod(int i, int j) {
+        return (((i % j) + j) % j);
     }
 }

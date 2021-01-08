@@ -2,13 +2,13 @@ package ACen1;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
+import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 
 public class EnlightenmentCenter extends RobotPlayer {
     static boolean builtThisRound = false;
     static boolean builtLastRound = false;
 
-    static int idx = 0;
 
     // Setup the enlightenment center
     static void setup() throws GameActionException {
@@ -20,14 +20,17 @@ public class EnlightenmentCenter extends RobotPlayer {
         builtLastRound = builtThisRound;
         builtThisRound = false;
 
-        if (rc.canBuildRobot(RobotType.POLITICIAN, directions[idx%8], 15) && !builtLastRound) {
-            rc.buildRobot(RobotType.POLITICIAN, directions[idx%8], 15);
-            rc.setFlag(idx%8);
-            builtThisRound = true;
+        int idx = (int) (Math.random() * directions.length);
+        for (int i = 0; i < directions.length; i++) {
+            Direction dir = directions[myMod((idx + i), directions.length)];
+            if (rc.canBuildRobot(RobotType.MUCKRAKER, dir, 25)) {
+                rc.buildRobot(RobotType.MUCKRAKER, dir, 25);
+                builtThisRound = true;
+                break;
+            }
         }
-        idx++;
 
-        if (!builtThisRound && !builtLastRound) { rc.setFlag(1000); }
+        // if (!builtThisRound && !builtLastRound) { rc.setFlag(0); }
 
         // Bidding logic
         if (rc.canBid((int)(rc.getInfluence() * percentBid))) {

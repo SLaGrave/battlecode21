@@ -2,38 +2,37 @@ package ACen1;
 
 import battlecode.common.*;
 
+import java.nio.file.DirectoryIteratorException;
+
 public class Politician extends RobotPlayer {
-    static Direction dir;
-    static int movesTaken = 0;
+    static int dirIdx;
 
     // Setup the politician
     static void setup() throws GameActionException {
-        RobotInfo[] nearby = rc.senseNearbyRobots(); // All nearby Robots
-        for (RobotInfo robot: nearby) {
-            if (robot.getType() == RobotType.ENLIGHTENMENT_CENTER) { // If its an enlightenment center
-                if (rc.canGetFlag(robot.getID())) {
-                    dir = directions[rc.getFlag(robot.getID())];
-                }
-            }
-        }
+        dirIdx = (int) (Math.random() * directions.length);
+
     }
 
     // Run the politician
     static void run() throws GameActionException {
+        RobotInfo[] nearby = rc.senseNearbyRobots(rc.getType().actionRadiusSquared, rc.getTeam().opponent());
+        System.out.println("Nearby " + nearby);
+        if (nearby.length != 0 && rc.canEmpower(rc.getType().actionRadiusSquared)) {
+            System.out.println("Empowered");
+            rc.empower(rc.getType().actionRadiusSquared);
+            return;
+        }
         move();
     }
 
-    // Move the politician
+    // Random movement
     static void move() throws GameActionException {
-        if (rc.canMove(dir) && movesTaken < 5) {
-            rc.move(dir);
-            movesTaken++;
-        }
-        else if (movesTaken < 5) {
-            Direction rdir = directions[(int) (Math.random() * directions.length)];
-            if (rc.canMove(rdir) && (rdir.getDeltaX()*-1 != dir.getDeltaX() && rdir.getDeltaY()*-1 != dir.getDeltaY())) {
-                rc.move(rdir);
-                movesTaken++;
+        int[] x = {0, 1, -1, 3, -3, 2, -2, 4, -4};
+        for (int i: x) {
+            if (rc.canMove(directions[myMod((dirIdx + i), directions.length)])) {
+                rc.move(directions[myMod((dirIdx + i), directions.length)]);
+                dirIdx += i;
+                break;
             }
         }
     }
