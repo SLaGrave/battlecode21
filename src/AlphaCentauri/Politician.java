@@ -1,8 +1,6 @@
-package ACen1;
+package AlphaCentauri;
 
 import battlecode.common.*;
-
-import java.nio.file.DirectoryIteratorException;
 
 public class Politician extends RobotPlayer {
     static int dirIdx;

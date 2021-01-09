@@ -1,10 +1,8 @@
-package ACen1;
+package AlphaCentauri;
 
-import battlecode.common.Direction;
-import battlecode.common.GameActionException;
-import battlecode.common.RobotInfo;
+import battlecode.common.*;
 
-public class Slanderer extends RobotPlayer {
+public class Muckraker extends RobotPlayer {
     static int dirIdx;
 
     static int xLean;
@@ -12,16 +10,19 @@ public class Slanderer extends RobotPlayer {
 
     static RobotInfo[] nearby;
 
-    // Setup the slanderer
+    static RobotInfo target = null;
+
+    // Setup the muckraker
     static void setup() throws GameActionException {
         dirIdx = (int) (Math.random() * directions.length);
 
     }
 
-    // Run the slanderer
+    // Run the muckraker
     static void run() throws GameActionException {
-        xLean = 0; yLean = 0; // Reset guiding
+        xLean = 0; yLean = 0; target = null; // Reset guiding
         analyze();
+        snipe();
         move();
     }
 
@@ -35,9 +36,21 @@ public class Slanderer extends RobotPlayer {
         int y = rc.getLocation().y;
         for (RobotInfo robot : nearby) {
             if (robot.getTeam() == rc.getTeam().opponent()) {
+                if (robot.type.canBeExposed() && rc.canExpose(robot.location)) {
+                    // Target the best robot to hit
+                    if (target == null) { target = robot; }
+                    else if (robot.getConviction() > target.getConviction()) { target = robot; }
+                }
                 xLean += robot.getLocation().x - x;
                 yLean += robot.getLocation().y - y;
             }
+        }
+    }
+
+    static void snipe() throws GameActionException {
+        if (target != null) {
+            System.out.println("Shooting target");
+            rc.expose(target.location);
         }
     }
 
@@ -57,8 +70,8 @@ public class Slanderer extends RobotPlayer {
             // Clean the leans somewhat
             if (Math.abs(xLean) > 2 * Math.abs(yLean)) {yLean = 0;}
             else if (Math.abs(yLean) > 2 * Math.abs(xLean)) {xLean = 0;}
-            xLean = Math.min(1, Math.max(-1, xLean)) * -1;
-            yLean = Math.min(1, Math.max(-1, yLean)) * -1;
+            xLean = Math.min(1, Math.max(-1, xLean));
+            yLean = Math.min(1, Math.max(-1, yLean));
             for (Direction dir : directions) {
                 if (dir.getDeltaY() == yLean && dir.getDeltaX() == xLean) {
                     System.out.println("Attempting to move " + dir);

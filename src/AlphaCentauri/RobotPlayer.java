@@ -1,4 +1,4 @@
-package ACen1;
+package AlphaCentauri;
 
 import battlecode.common.*;
 
@@ -20,7 +20,7 @@ public strictfp class RobotPlayer {
     static int muckrakerInf = 25;
     static int everyNShouldBeMuck = 5;
 
-    static int politicanInf = 25;
+    static int politicianInf = 25;
 
     static final float percentBid = 0.1f;
 
@@ -35,7 +35,7 @@ public strictfp class RobotPlayer {
 
         // This is the RobotController object. You use it to perform actions from this robot,
         // and to get information on its current status.
-        ACen1.RobotPlayer.rc = rc;
+        AlphaCentauri.RobotPlayer.rc = rc;
 
         switch (rc.getType()) {
             case ENLIGHTENMENT_CENTER: EnlightenmentCenter.setup(); break;

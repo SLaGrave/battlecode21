@@ -1,4 +1,4 @@
-package ACen1;
+package AlphaCentauri;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -26,7 +26,7 @@ public class EnlightenmentCenter extends RobotPlayer {
             int inf;
             if (rc.getInfluence() > slandererMinToBuild) { t = RobotType.SLANDERER; inf = slandererInf; }
             else if (buildsSinceMuck >= everyNShouldBeMuck) { t = RobotType.MUCKRAKER; inf = muckrakerInf; }
-            else { t = RobotType.POLITICIAN; inf = politicanInf; }
+            else { t = RobotType.POLITICIAN; inf = politicianInf; }
 
             int idx = (int) (Math.random() * directions.length);
             for (int i = 0; i < directions.length; i++) {
