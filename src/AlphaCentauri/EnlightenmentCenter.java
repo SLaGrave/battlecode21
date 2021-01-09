@@ -5,10 +5,12 @@ import battlecode.common.GameActionException;
 import battlecode.common.RobotType;
 
 public class EnlightenmentCenter extends RobotPlayer {
-    static boolean builtThisRound = false;
-    static boolean builtLastRound = false;
 
     static int buildsSinceMuck = 0;
+
+    // New things
+    static int dirIdx = 0;
+
 
 
     // Setup the enlightenment center
@@ -18,10 +20,22 @@ public class EnlightenmentCenter extends RobotPlayer {
 
     // Run the enlightenment center
     static void run() throws GameActionException {
-        builtLastRound = builtThisRound;
-        builtThisRound = false;
 
         if (rc.getCooldownTurns() < 1) {
+            RobotType rt = RobotType.MUCKRAKER;
+            Direction dir = directions[dirIdx % directions.length];
+            if (ecRole == spawnTurtles) {
+                rt = RobotType.MUCKRAKER;
+            }
+            if (rc.canBuildRobot(rt, dir, 1)) {
+                rc.buildRobot(rt, dir, 1);
+                dirIdx = (dirIdx + 1) % directions.length;
+            }
+            rc.setFlag(dirIdx * 10);
+
+        }
+
+        /*if (rc.getCooldownTurns() < 1) {
             RobotType t;
             int inf;
             if (rc.getInfluence() > slandererMinToBuild) { t = RobotType.SLANDERER; inf = slandererInf; }
@@ -38,9 +52,7 @@ public class EnlightenmentCenter extends RobotPlayer {
                     break;
                 }
             }
-        }
-
-        // if (!builtThisRound && !builtLastRound) { rc.setFlag(0); }
+        }*/
 
         // Bidding logic
         if (rc.canBid((int)(rc.getInfluence() * percentBid))) {

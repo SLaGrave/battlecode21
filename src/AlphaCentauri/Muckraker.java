@@ -12,18 +12,39 @@ public class Muckraker extends RobotPlayer {
 
     static RobotInfo target = null;
 
+    // New things
+    static int timesMoved = 0;
+
     // Setup the muckraker
     static void setup() throws GameActionException {
         dirIdx = (int) (Math.random() * directions.length);
-
     }
 
     // Run the muckraker
     static void run() throws GameActionException {
-        xLean = 0; yLean = 0; target = null; // Reset guiding
-        analyze();
-        snipe();
-        move();
+        if (mkRole == wall) {
+            RobotInfo[] nearby = rc.senseNearbyRobots(rc.getType().actionRadiusSquared, rc.getTeam());
+            for (RobotInfo robot : nearby) {
+                if (robot.getType() == RobotType.ENLIGHTENMENT_CENTER) {
+                    System.out.println("Trying to get flag");
+                    if (rc.canGetFlag(robot.getID())) {
+                        int flag = rc.getFlag(robot.getID());
+                        System.out.println("Flag " + flag);
+                        Direction dir = directions[flag/10];
+                        if (robot.getLocation().directionTo(rc.getLocation()) == dir) {
+                            if (rc.canMove(dir)) { rc.move(dir); timesMoved++;}
+                            if (timesMoved > 1) { mkRole = normal; }
+                        }
+                    }
+                }
+            }
+        }
+        if (mkRole == normal) {
+            xLean = 0; yLean = 0; target = null; // Reset guiding
+            analyze();
+            snipe();
+            move();
+        }
     }
 
     static void analyze() throws GameActionException {

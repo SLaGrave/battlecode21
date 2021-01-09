@@ -24,6 +24,16 @@ public strictfp class RobotPlayer {
 
     static final float percentBid = 0.1f;
 
+
+    // New things
+    static int spawnTurtles = 0;
+    static int signalSurge = 1;
+    static int ecRole = spawnTurtles;
+
+    static int wall = 0;
+    static int normal = 1;
+    static int mkRole = wall;
+
     static RobotController rc;
 
     /**
