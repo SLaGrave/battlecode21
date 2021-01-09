@@ -14,11 +14,15 @@ public strictfp class RobotPlayer {
             Direction.NORTHWEST, // -1, 1
     };
 
-    static final float percentBid = 0.01f;
+    static int slandererInf = 41;
+    static int slandererMinToBuild = 120;
 
-    // Politician role details
-    static final int NORMAL = 0;
-    static int politicianRole = NORMAL;
+    static int muckrakerInf = 25;
+    static int everyNShouldBeMuck = 5;
+
+    static int politicanInf = 25;
+
+    static final float percentBid = 0.1f;
 
     static RobotController rc;
 

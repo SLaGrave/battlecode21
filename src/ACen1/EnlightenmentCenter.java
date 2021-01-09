@@ -2,12 +2,13 @@ package ACen1;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
-import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 
 public class EnlightenmentCenter extends RobotPlayer {
     static boolean builtThisRound = false;
     static boolean builtLastRound = false;
+
+    static int buildsSinceMuck = 0;
 
 
     // Setup the enlightenment center
@@ -20,13 +21,22 @@ public class EnlightenmentCenter extends RobotPlayer {
         builtLastRound = builtThisRound;
         builtThisRound = false;
 
-        int idx = (int) (Math.random() * directions.length);
-        for (int i = 0; i < directions.length; i++) {
-            Direction dir = directions[myMod((idx + i), directions.length)];
-            if (rc.canBuildRobot(RobotType.MUCKRAKER, dir, 25)) {
-                rc.buildRobot(RobotType.MUCKRAKER, dir, 25);
-                builtThisRound = true;
-                break;
+        if (rc.getCooldownTurns() < 1) {
+            RobotType t;
+            int inf;
+            if (rc.getInfluence() > slandererMinToBuild) { t = RobotType.SLANDERER; inf = slandererInf; }
+            else if (buildsSinceMuck >= everyNShouldBeMuck) { t = RobotType.MUCKRAKER; inf = muckrakerInf; }
+            else { t = RobotType.POLITICIAN; inf = politicanInf; }
+
+            int idx = (int) (Math.random() * directions.length);
+            for (int i = 0; i < directions.length; i++) {
+                Direction dir = directions[myMod((idx + i), directions.length)];
+                if (rc.canBuildRobot(t, dir, inf)) {
+                    rc.buildRobot(t, dir, inf);
+                    builtThisRound = true;
+                    if (t != RobotType.MUCKRAKER) { buildsSinceMuck++; } else { buildsSinceMuck = 0; }
+                    break;
+                }
             }
         }
 
