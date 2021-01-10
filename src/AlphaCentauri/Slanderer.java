@@ -23,6 +23,11 @@ public class Slanderer extends RobotPlayer {
         xLean = 0; yLean = 0; // Reset guiding
         analyze();
         move();
+
+        int flag = Utils.genFlagNearestEC();
+        System.out.println("My Flag is " + flag);
+        if (rc.canSetFlag(flag)) { rc.setFlag(flag); }
+        else { System.out.println("Can't set it to that!"); }
     }
 
     static void analyze() throws GameActionException {

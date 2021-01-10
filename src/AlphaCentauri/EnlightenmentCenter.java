@@ -40,12 +40,15 @@ public class EnlightenmentCenter extends RobotPlayer {
             }
         }
 
-        // if (!builtThisRound && !builtLastRound) { rc.setFlag(0); }
-
         // Bidding logic
         if (rc.canBid((int)(rc.getInfluence() * percentBid))) {
             rc.bid((int)(rc.getInfluence() * percentBid));
         }
+
+        int flag = Utils.genFlagNearestEC();
+        System.out.println("My Flag is " + flag);
+        if (rc.canSetFlag(flag)) { rc.setFlag(flag); }
+        else { System.out.println("Can't set it to that!"); }
 
     }
 }

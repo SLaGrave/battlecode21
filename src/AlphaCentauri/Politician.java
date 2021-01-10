@@ -20,7 +20,19 @@ public class Politician extends RobotPlayer {
             rc.empower(rc.getType().actionRadiusSquared);
             return;
         }
+        RobotInfo[] nearby2 = rc.senseNearbyRobots(rc.getType().actionRadiusSquared, Team.NEUTRAL);
+        System.out.println("Nearby " + nearby2);
+        if (nearby2.length != 0 && rc.canEmpower(rc.getType().actionRadiusSquared)) {
+            System.out.println("Empowered");
+            rc.empower(rc.getType().actionRadiusSquared);
+            return;
+        }
         move();
+
+        int flag = Utils.genFlagNearestEC();
+        System.out.println("My Flag is " + flag);
+        if (rc.canSetFlag(flag)) { rc.setFlag(flag); }
+        else { System.out.println("Can't set it to that!"); }
     }
 
     // Random movement

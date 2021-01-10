@@ -24,6 +24,11 @@ public class Muckraker extends RobotPlayer {
         analyze();
         snipe();
         move();
+
+        int flag = Utils.genFlagNearestEC();
+        System.out.println("My Flag is " + flag);
+        if (rc.canSetFlag(flag)) { rc.setFlag(flag); }
+        else { System.out.println("Can't set it to that!"); }
     }
 
     static void analyze() throws GameActionException {
